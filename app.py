@@ -11,8 +11,8 @@ rad=st.sidebar.radio("Navigation Menu",["Home","Diabetes Section","Heart Disease
 if rad=="Home":
     st.title("Intelligent Tool for Medical Data Collection and Processing")
     # st.image("Medical Prediction Home Page.jpg")
-    st.text("Project By:")
-    st.text("Supervised By:")
+    st.text("Project By: AHMAD IBRAHIM")
+    st.text("Supervised By: MAL. BABASHEHU hUSSAINI | AHMAD JAJERE")
     st.text("The Following Diseases are Predicted based on Medical information provided->")
     
     st.text("1. Diabetes Predictions")
