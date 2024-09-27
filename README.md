@@ -1,6 +1,6 @@
-# Medical-Predictions-Streamlit-Web-App
+# Medical-Data-Collection-Processing
 
-This app is used to predict the medical state of an individual
+This Project is used to predict the medical state of an individual
 The disease sections include ->
 1. Diabetes
 2. Heart Disease 
