@@ -5,25 +5,21 @@ import plotly.express as px
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
-# Initialize session state for login
-if 'logged_in' not in st.session_state:
-    st.session_state.logged_in = False
+# Initialize session state for user input storage
+if 'user_inputs' not in st.session_state:
+    st.session_state.user_inputs = []
 
 # Login Page
-if not st.session_state.logged_in:
+if 'logged_in' not in st.session_state:
     st.title("Login Page")
     username = st.text_input("Username")
     password = st.text_input("Password", type='password')
     
     if st.button("Login"):
-        if username == "admin" and password == "12345":  # Replace with your own logic
-            st.session_state.logged_in = True
-            st.success("Logged in successfully!")
-        else:
-            st.error("Invalid username or password")
-
-# Main Application
-if st.session_state.logged_in:
+        # Here you can add your authentication logic
+        st.session_state.logged_in = True
+        st.success("Login successful!")
+else:
     rad = st.sidebar.radio("Navigation Menu", ["Home", "Diabetes Section", "Heart Disease Section"])
 
     # Home Page
@@ -51,17 +47,21 @@ if st.session_state.logged_in:
         insulin = st.number_input("Enter Your Insulin Level In Body (0-850)", min_value=0, max_value=850, step=1)
         bmi = st.number_input("Enter Your Body Mass Index/BMI Value (0-70)", min_value=0, max_value=70, step=1)
         age = st.number_input("Enter Your Age (20-80)", min_value=20, max_value=80, step=1)
-        prediction2 = model2.predict([[glucose, insulin, bmi, age]])[0]
-
+        
         if st.button("Predict"):
-            if prediction2 == 1:
-                st.warning("You Might Be Affected By Diabetes")
-            elif prediction2 == 0:
-                st.success("You Are Safe")
-
-            # Store output in a dictionary
-            results = {"Glucose": glucose, "Insulin": insulin, "BMI": bmi, "Age": age, "Prediction": "Diabetes" if prediction2 == 1 else "No Diabetes"}
-            st.table(pd.DataFrame([results]))
+            prediction2 = model2.predict([[glucose, insulin, bmi, age]])[0]
+            result = "You Might Be Affected By Diabetes" if prediction2 == 1 else "You Are Safe"
+            st.warning(result)
+            
+            # Store user input in a dictionary
+            user_input = {
+                "Glucose": glucose,
+                "Insulin": insulin,
+                "BMI": bmi,
+                "Age": age,
+                "Prediction": result
+            }
+            st.session_state.user_inputs.append(user_input)
 
     # Heart Disease Prediction
     df3 = pd.read_csv("Heart Disease Predictions.csv")
@@ -77,17 +77,26 @@ if st.session_state.logged_in:
         st.write("All The Values Should Be In Range Mentioned")
         chestpain = st.number_input("Rate Your Chest Pain (1-4)", min_value=1, max_value=4, step=1)
         bp = st.number_input("Enter Your Blood Pressure Rate (95-200)", min_value=95, max_value=200, step=1)
-        cholestrol = st.number_input("Enter Your Cholestrol Level Value (125-565)", min_value=125, max_value=565, step=1)
+        cholesterol = st.number_input("Enter Your Cholesterol Level Value (125-565)", min_value=125, max_value=565, step=1)
         maxhr = st.number_input("Enter Your Maximum Heart Rate (70-200)", min_value=70, max_value=200, step=1)
-        prediction3 = model3.predict([[chestpain, bp, cholestrol, maxhr]])[0]
-
+        
         if st.button("Predict"):
-            if prediction3 == 1:
-                st.warning("You Might Be Affected By Heart Disease")
-            elif prediction3 == 0:
-                st.success("You Are Safe")
+            prediction3 = model3.predict([[chestpain, bp, cholesterol, maxhr]])[0]
+            result = "You Might Be Affected By Heart Disease" if prediction3 == 1 else "You Are Safe"
+            st.warning(result)
+            
+            # Store user input in a dictionary
+            user_input = {
+                "Chest Pain": chestpain,
+                "Blood Pressure": bp,
+                "Cholesterol": cholesterol,
+                "Max Heart Rate": maxhr,
+                "Prediction": result
+            }
+            st.session_state.user_inputs.append(user_input)
 
-            # Store output in a dictionary
-            results = {"Chest Pain": chestpain, "Blood Pressure": bp, "Cholesterol": cholestrol, "Max Heart Rate": maxhr, "Prediction": "Heart Disease" if prediction3 == 1 else "No Heart Disease"}
-            st.table(pd.DataFrame([results]))
+    # Display user inputs in a table
+    if st.session_state.user_inputs:
+        st.header("User Input Predictions")
+        st.table(st.session_state.user_inputs)
 
